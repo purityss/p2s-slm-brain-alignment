@@ -25,13 +25,11 @@ Each sub-directory is named after the specific figure panel (e.g., `Fig4/c/`). I
 To reproduce a specific figure panel:
 1. Clone or download this repository to your local machine.
 2. Open MATLAB and navigate to the specific directory of the desired figure panel.
-   * *Example:* `cd('Source_data_code/Main Figures/Fig5/i/')`
-3. Run the `.m` script provided in that folder (e.g., `mds_251229.m`). 
+3. Run the `.m` script provided in that folder. 
 4. The script will automatically load the accompanying `.mat` files in the same directory and generate the final plot.
 
 ## 📌 Note to Reviewers
 
-* **Terminology:** In alignment with academic accuracy, variables and features in the code are denoted using the terms **"phonological"** and **"semantic"** (corresponding to "sound" and "meaning" levels of representation).
 * **Data Privacy & Raw Signal:** Due to patient privacy regulations and the substantial storage size of raw human intracranial recordings (sEEG) and large-scale SLM activation weights, this repository provides the *intermediate processed source data* required to generate the final figures. 
 * **Full Pipeline:** The complete pre-processing pipeline code (from continuous sEEG signals to temporal epochs) is available upon reasonable request and will be fully integrated into this repository upon final publication.
 
