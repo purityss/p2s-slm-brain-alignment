@@ -1,0 +1,150 @@
+clear all
+close all
+
+% --- Setup Paths and Load Data ---
+load('model_matrix.mat')
+
+% --- Color Setup ---
+custom_cmap = [68 1 84; 59 82 139; 33 145 140; 94 201 98; 253 231 37]/255;
+n_models_total = size(model_matrix, 1);
+t = linspace(0,1,n_models_total).^0.7;
+colors_all_models = interp1(linspace(0,1,size(custom_cmap,1)), ...
+                     custom_cmap, t, 'pchip');
+
+% =========================================================================
+% *** User Defined Settings Area ***
+% =========================================================================
+% [Setting 1: Define axis limits for each of the 6 subplots]
+% Format: [X_min, X_max, Y_min, Y_max]
+axis_settings = [
+    % Row 1: Phonological
+    0, 100,  0, 1.0;   % Plot 1 (Top Left)
+    0, 100,  0, 1.0;   % Plot 2 (Top Right)
+    
+    % Row 2: Semantic
+    0, 100,  -1, 0;    % Plot 3 (Middle Left)
+    0, 100,  -1, 0;    % Plot 4 (Middle Right)
+    
+    % Row 3: P2S-transfer
+    0, 100, -1, 1.0;   % Plot 5 (Bottom Left)
+    0, 100, -1, 1.0    % Plot 6 (Bottom Right)
+];
+% =========================================================================
+
+figure;
+% [Setting 2: Adjust figure size]
+set(gcf, 'Position', [100, 50, 240, 390]); 
+
+% [Setting 3: Set Layout]
+t_layout = tiledlayout(3, 2, 'TileSpacing', 'loose', 'Padding', 'compact'); 
+
+% Define configurations [x_col, y_col]
+% Column indices mapping: latency (3, 5, 4) or distance (6, 8, 7) based on your comments
+plot_configs = [
+    1, 6; 2, 6; % Row 1  latency 3  distance 6
+    1, 8; 2, 8; % Row 2  latency 5   distance 8
+    1, 7; 2, 7  % Row 3  latency 4   distance 7
+];
+row_titles = {'phonological units', 'semantic units', 'P2S-transfer units'};
+
+for k = 1:6
+    nexttile; 
+    
+    col_x = plot_configs(k, 1);
+    col_y = plot_configs(k, 2);
+    
+    x_raw = model_matrix(:, col_x);
+    y_raw = model_matrix(:, col_y);
+    
+    % Remove NaNs
+    valid_idx = ~isnan(x_raw) & ~isnan(y_raw);
+    x = x_raw(valid_idx);
+    y = y_raw(valid_idx);
+    colors = colors_all_models(valid_idx, :);
+    
+    % Linear Fitting
+    p = polyfit(x, y, 1);
+    x_fit = linspace(min(x), max(x), 100)';
+    y_fit = polyval(p, x_fit);
+    
+    % CI Calculation
+    X_mat = [ones(length(x), 1), x];
+    b = X_mat \ y;
+    y_hat = X_mat * b;
+    residuals = y - y_hat;
+    df = length(x) - 2;
+    s_err = sqrt(sum(residuals.^2) / df);
+    CI = tinv(0.975, df) * s_err * sqrt(1/length(x) + (x_fit - mean(x)).^2 / sum((x - mean(x)).^2));
+    y_upper = y_fit + CI;
+    y_lower = y_fit - CI;
+    
+    % Draw Plot
+    hold on;
+    fill([x_fit; flipud(x_fit)], [y_upper; flipud(y_lower)], [0.85 0.85 0.85], ...
+         'EdgeColor', 'none', 'FaceAlpha', 0.5); 
+    plot(x_fit, y_fit, 'k-', 'LineWidth', 1);
+    scatter(x, y, 10, colors, 'filled');
+    
+    % --- Apply Individual Axis Limits ---
+    this_xlim = axis_settings(k, 1:2);
+    this_ylim = axis_settings(k, 3:4);
+    
+    xlim(this_xlim);
+    ylim(this_ylim);
+    
+    % --- Correlation Text (Dynamic Position) ---
+    [r, pval] = corr(x, y, 'Type', 'Pearson');
+    
+    if pval < 0.001
+        stars = '***';
+    elseif pval < 0.01
+        stars = '**';
+    elseif pval < 0.05
+        stars = '*';
+    else
+        stars = '';
+    end
+    
+    % Calculate text position: 10% below top limit
+    text_pos_y = this_ylim(2) - 0.1 * (this_ylim(2) - this_ylim(1));
+    % Text X position: 5% after start limit
+    text_pos_x = this_xlim(1) + 0.05 * (this_xlim(2) - this_xlim(1));
+    
+    text(text_pos_x, text_pos_y, sprintf('\\it r = %.2f%s', r, stars), 'FontSize', 8, 'FontAngle', 'italic');
+    
+    % Aesthetics
+    box off;
+    set(gca, 'FontSize', 8, 'Box', 'off', 'FontName', 'Arial', 'TickDir', 'out', 'LineWidth', 0.5, 'XColor', 'k', 'YColor', 'k');
+    
+    % --- Titles (Left column only) ---
+    if k == 1 
+        title(row_titles{1}, 'FontWeight', 'normal', 'FontSize', 9);
+    elseif k == 3 
+        title(row_titles{2}, 'FontWeight', 'normal', 'FontSize', 9);
+    elseif k == 5 
+        title(row_titles{3}, 'FontWeight', 'normal', 'FontSize', 9);
+    end
+end
+
+% --- Global Labels Axis ---
+han = axes(gcf,'visible','off'); 
+han.Title.Visible='on';
+han.XLabel.Visible='on';
+han.YLabel.Visible='on';
+han.XLabel.Position(2) = han.XLabel.Position(2) - 0.02;
+
+% Model list for mapping
+labels_all = { ...
+    'XLSR-53-ch', ...
+    'Whisper-large-v3', ...
+    'LLaSM', ...
+    'SALMONN', ...
+    'Qwen-Audio', ...
+    'Qwen-Audio-Chat', ...
+    'Qwen2-Audio', ...
+    'Qwen2-Audio-Instruct', ...
+    'GLM-4-Voice', ...
+    'Freeze-Omni', ...
+    'MiniCPM-o 2.6', ...
+    'Qwen2.5-Omni'};
+labels = labels_all(valid_idx);
