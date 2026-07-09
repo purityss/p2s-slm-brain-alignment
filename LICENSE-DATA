@@ -1,0 +1,31 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Copyright (c) 2026 Shenshen Zhang and contributors
+
+The speech stimuli, processed data, and documentation created by the authors
+and distributed in this repository are licensed under the Creative Commons
+Attribution 4.0 International License, unless otherwise stated.
+
+You are free to:
+
+- Share — copy and redistribute the material in any medium or format for any
+  purpose, even commercially.
+- Adapt — remix, transform, and build upon the material for any purpose, even
+  commercially.
+
+Under the following terms:
+
+- Attribution — You must give appropriate credit, provide a link to the
+  license, and indicate if changes were made. You may do so in any reasonable
+  manner, but not in any way that suggests the licensor endorses you or your
+  use.
+- No additional restrictions — You may not apply legal terms or technological
+  measures that legally restrict others from doing anything the license
+  permits.
+
+The complete license text is available at:
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+This license does not apply to raw sEEG recordings, third-party model weights,
+or external datasets. Those resources are governed by their respective access
+conditions and licenses.

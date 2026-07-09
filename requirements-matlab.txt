@@ -1,0 +1,30 @@
+# MATLAB environment used across brain, model, alignment, and plotting code
+MATLAB R2022b or newer
+
+# MathWorks toolboxes
+Signal Processing Toolbox
+Statistics and Machine Learning Toolbox
+Wavelet Toolbox
+
+# Third-party MATLAB toolboxes
+EEGLAB
+EEGLAB BIOSIG plugin
+LIBSVM MATLAB interface
+
+# Functions supplied by the toolboxes above
+# EEGLAB/BIOSIG: pop_biosig, pop_chanevent, pop_eegfiltnew, pop_epoch
+# Signal Processing Toolbox: hilbert
+# Wavelet Toolbox: cwt
+# Statistics and Machine Learning Toolbox:
+#   corr, dsearchn, mdscale, procrustes, tinv, ttest2
+# LIBSVM MATLAB interface: svmtrain, svmpredict
+
+# Project helper dependency used for responsive-contact identification
+computeCohen_d.m
+
+# Electrode-localization software described in the manuscript
+SPM12
+Brainstorm
+FreeSurfer 6.0
+USC Brain atlas
+ICBM152_2023b template

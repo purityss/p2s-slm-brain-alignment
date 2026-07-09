@@ -1,0 +1,31 @@
+# Shared Python dependencies for the model-analysis scripts.
+#
+# Model repositories may require different Python, PyTorch, Transformers,
+# CUDA, or auxiliary-package versions. Create the environment recommended by
+# the official model card first, and then install or reconcile this shared
+# dependency set. Versions are intentionally not pinned globally because one
+# environment specification is not compatible with all 12 evaluated models.
+
+# Model loading, inference, hooks, and device placement
+torch
+torchaudio
+transformers
+accelerate
+
+# Audio loading and preprocessing
+librosa
+soundfile
+
+# Numerical analysis and MATLAB-file I/O
+numpy
+scipy
+
+# Tabular metadata and Excel manifests
+pandas
+openpyxl
+
+# ASR evaluation metrics
+jiwer
+
+# Note: os, re, csv, io, math, random, warnings, and collections are part of
+# the Python standard library and do not need to be installed with pip.
